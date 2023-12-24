@@ -25,14 +25,8 @@ public class Utente {
     @Column(name = "cognome")
     private String cognome;
 
-    @Column(name = "authKey")
-    private String authKey;
-
-    @Column(name = "access_token")
-    private String accessToken;
-
     @Column(name = "admin")
-    private String admin;
+    private Boolean admin;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sito_attivo")
