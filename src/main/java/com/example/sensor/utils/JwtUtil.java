@@ -3,37 +3,46 @@ package com.example.sensor.utils;
 import com.example.sensor.model.entities.Utente;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Component
 public class JwtUtil {
 
     @Value("${jwt.secret-key}")
-    private final String secretKey;
-    private long accessTokenValidity = 60*60*1000;
+    private String secretKeyPath;
+    private byte[] secretKey;
+    private long ONE_HOUR_IN_MILLIS = 60*60*1000;
 
-    private final JwtParser jwtParser;
+    private JwtParser jwtParser;
 
     private final String TOKEN_HEADER = "Authorization";
     private final String TOKEN_PREFIX = "Bearer ";
 
-    private JwtUtil(String secretKey){
-        this.secretKey = secretKey;
+    @PostConstruct
+    private void initialize() throws IOException {
+        log.info("JwtUtil.initialize()");
+        this.secretKey = null;
+        this.secretKey = Files.readAllBytes(Path.of(secretKeyPath));
         this.jwtParser = Jwts.parser().setSigningKey(getSigningKey()).build();
     }
 
     public String createToken(Utente user) {
         Date tokenCreateTime = new Date();
-        Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(accessTokenValidity));
+        Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(ONE_HOUR_IN_MILLIS));
         Claims claims = Jwts.claims()
                 .subject(user.getUsername())
                 .add("firstName",user.getNome())
@@ -47,8 +56,7 @@ public class JwtUtil {
                 .compact();
     }
     private Key getSigningKey() {
-        byte[] keyBytes = this.secretKey.getBytes(StandardCharsets.UTF_8);
-        return Keys.hmacShaKeyFor(keyBytes);
+        return Keys.hmacShaKeyFor(secretKey);
     }
     private Claims parseJwtClaims(String token) {
         return jwtParser.parseClaimsJws(token).getBody();
