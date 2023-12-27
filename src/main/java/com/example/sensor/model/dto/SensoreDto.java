@@ -1,6 +1,5 @@
 package com.example.sensor.model.dto;
 
-import com.example.sensor.model.entities.Sito;
 import lombok.Data;
 
 @Data

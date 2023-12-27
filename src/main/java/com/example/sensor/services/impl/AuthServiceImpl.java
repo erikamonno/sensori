@@ -7,16 +7,16 @@ import com.example.sensor.model.response.LoginResponse;
 import com.example.sensor.repositories.UtenteRepository;
 import com.example.sensor.services.AuthService;
 import com.example.sensor.utils.JwtUtil;
-import com.example.sensor.utils.RoleConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -31,17 +31,6 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return utenteRepository.findByUsername(username)
-                .map(user -> User.builder()
-                        .username(user.getUsername())
-                        .password(user.getPassword())
-                        .roles(user.getAdmin() ? RoleConstants.ADMIN : RoleConstants.USER)
-                        .build())
-                .orElseThrow(() -> new UsernameNotFoundException("Utente non trovato"));
-    }
-
-    @Override
     public LoginResponse login(LoginRequest request) {
         log.info("login for user {}", request.getUsername());
         Authentication authentication =
@@ -53,6 +42,8 @@ public class AuthServiceImpl implements AuthService {
                 .token(jwtUtil.createToken(user))
                 .build();
     }
+
+    public enum Genere {MASCHIO, FEMMINA, TRANS, SADAS}
 
     private UtenteDto convertEntityToDto(Utente entity) {
         UtenteDto dto = null;

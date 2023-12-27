@@ -1,6 +1,5 @@
 package com.example.sensor.model.dto;
 
-import com.example.sensor.model.entities.Sensore;
 import lombok.Data;
 
 import java.time.LocalDateTime;

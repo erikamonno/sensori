@@ -14,27 +14,20 @@ import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.Key;
 import java.text.ParseException;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -42,11 +35,11 @@ import java.util.stream.Collectors;
 public class JwtUtil {
 
     @Value("${jwt.secret-key}")
-    private String secretKeyPath;
+    String secretKeyPath;
     private byte[] secretKey;
 
     @Value("${jwt.issuer}")
-    private String issuer;
+    String issuer;
 
     @Value("${jwt.expire-hours}")
     Long expireHourToken;
@@ -55,7 +48,8 @@ public class JwtUtil {
 
     @PostConstruct
     private void init() throws IOException {
-        secretKey = Files.readAllBytes(Path.of(getClass().getClassLoader().getResource(secretKeyPath).getPath()));
+        log.info("JwtUtil.init()");
+        secretKey = Files.readAllBytes(ResourceUtils.getFile("classpath:" + secretKeyPath).toPath());
     }
 
     public String createToken(Utente user) {
@@ -75,7 +69,7 @@ public class JwtUtil {
             JWSObject jwsObject = new JWSObject(new JWSHeader(JWSAlgorithm.HS256),
                     payload);
 
-            jwsObject.sign(new MACSigner(SECRET));
+            jwsObject.sign(new MACSigner(secretKey));
             return jwsObject.serialize();
         }
         catch (JOSEException e) {
