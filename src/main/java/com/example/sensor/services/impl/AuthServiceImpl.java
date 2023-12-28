@@ -14,10 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 @Slf4j
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -36,14 +32,11 @@ public class AuthServiceImpl implements AuthService {
         Authentication authentication =
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         Utente user = utenteRepository.findByUsername(authentication.getName()).orElseThrow();
-
         return LoginResponse.builder()
                 .user(convertEntityToDto(user))
                 .token(jwtUtil.createToken(user))
                 .build();
     }
-
-    public enum Genere {MASCHIO, FEMMINA, TRANS, SADAS}
 
     private UtenteDto convertEntityToDto(Utente entity) {
         UtenteDto dto = null;

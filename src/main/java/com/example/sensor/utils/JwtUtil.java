@@ -79,10 +79,7 @@ public class JwtUtil {
 
     public UsernamePasswordAuthenticationToken parseToken(String token) throws JOSEException, ParseException,
             BadJOSEException {
-
-        byte[] secretKey = SECRET.getBytes();
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        signedJWT.verify(new MACVerifier(secretKey));
+        SignedJWT signedJWT = getSignedJwt(token);
         ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
 
         JWSKeySelector<SecurityContext> keySelector = new JWSVerificationKeySelector<>(JWSAlgorithm.HS256,
@@ -98,5 +95,21 @@ public class JwtUtil {
         return new UsernamePasswordAuthenticationToken(username, null, authorities);
     }
 
+    public String getSubject(String token) throws ParseException, JOSEException {
+        return getSignedJwt(token).getJWTClaimsSet().getSubject();
+    }
+
+    public boolean isExpired(String token) throws JOSEException, ParseException {
+        SignedJWT signedJWT = getSignedJwt(token);
+        log.info("exp time {}", signedJWT.getJWTClaimsSet().getExpirationTime());
+        return signedJWT.getJWTClaimsSet().getExpirationTime().before(new Date());
+    }
+
+    private SignedJWT getSignedJwt(String token) throws JOSEException, ParseException {
+        byte[] secretKey = SECRET.getBytes();
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        signedJWT.verify(new MACVerifier(secretKey));
+        return signedJWT;
+    }
 
 }
