@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    username: root
+    url: jdbc:mysql://localhost:3306/sensori_db
+    password: ''
+jwt:
+  public-key: public.pem
+  secret-key: secret.pem
+  issuer: http://localhost:8080
+  expire-hours: 24

@@ -27,7 +27,7 @@ import org.springframework.web.filter.CorsFilter;
         jsr250Enabled = true,
         prePostEnabled = true
 )
-public class SecurityConfig  {
+public class SecurityConfig {
 
     @Autowired
     UserDetailsService userDetailsService;

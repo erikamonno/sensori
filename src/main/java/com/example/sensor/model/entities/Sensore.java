@@ -19,9 +19,6 @@ public class Sensore {
     @Column(name = "marca")
     private String marca;
 
-    @Column(name = "codice_errore")
-    private String codiceErrore;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sito")
     private Sito sito;

@@ -12,4 +12,5 @@ public class RilevazioneDto {
     private Double valore;
     private String messaggio;
     private SensoreDto sensore;
+    private EccezioneDto eccezione;
 }

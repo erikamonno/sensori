@@ -25,10 +25,5 @@ public class AuthController {
         return service.login(request);
     }
 
-    @RolesAllowed("USER")
-    @GetMapping(path = "/ciao")
-    public void ciao() {
-
-    }
 
 }
