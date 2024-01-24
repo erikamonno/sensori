@@ -93,13 +93,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler(Exception.class)
+/*    @ExceptionHandler(Exception.class)
     public ErrorDto handleAll(Exception e) {
         logError(e);
         return ErrorDto.builder()
                 .error(e.getMessage())
                 .build();
-    }
+    } */
 
     private void logError(Exception e) {
         log.error("Exception thrown! ", e);
