@@ -6,17 +6,15 @@ import com.example.sensor.model.dto.UtenteDto;
 import com.example.sensor.model.entities.Utente;
 import com.example.sensor.model.mappers.UtenteMapper;
 import com.example.sensor.model.request.AddUserRequest;
-import com.example.sensor.model.request.UpdateRequest;
+import com.example.sensor.model.request.UpdateUserRequest;
 import com.example.sensor.repositories.UtenteRepository;
 import com.example.sensor.services.UtenteService;
 import com.example.sensor.utils.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UtenteServiceImpl implements UtenteService {
@@ -49,7 +47,7 @@ public class UtenteServiceImpl implements UtenteService {
     }
 
     @Override
-    public void aggiornaUtente(UpdateRequest request) throws UtenteNonEsistenteException {
+    public void aggiornaUtente(UpdateUserRequest request) throws UtenteNonEsistenteException {
         Optional<Utente> oEntity = repository.findById(request.getId());
         if(oEntity.isEmpty()) {
             throw new UtenteNonEsistenteException();

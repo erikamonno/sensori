@@ -4,10 +4,7 @@ import com.example.sensor.exceptions.UtenteEsistenteException;
 import com.example.sensor.exceptions.UtenteNonEsistenteException;
 import com.example.sensor.model.dto.UtenteDto;
 import com.example.sensor.model.request.AddUserRequest;
-import com.example.sensor.model.request.LoginRequest;
-import com.example.sensor.model.request.UpdateRequest;
-import com.example.sensor.model.response.LoginResponse;
-import com.example.sensor.services.AuthService;
+import com.example.sensor.model.request.UpdateUserRequest;
 import com.example.sensor.services.UtenteService;
 import com.example.sensor.utils.RoleConstants;
 import jakarta.annotation.security.RolesAllowed;
@@ -15,7 +12,6 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,7 +54,7 @@ public class UtenteController {
 
     @RolesAllowed(value = RoleConstants.ADMIN)
     @PutMapping(path = "/aggiorna", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> aggiornaUtente(@Valid @RequestBody UpdateRequest request) {
+    public ResponseEntity<Void> aggiornaUtente(@Valid @RequestBody UpdateUserRequest request) {
         ResponseEntity<Void> response = null;
         try{
             service.aggiornaUtente(request);
